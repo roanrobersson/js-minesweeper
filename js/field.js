@@ -5,6 +5,7 @@ class Field {
         this.zoom = configs.zoom;
         this.mines = configs.mines;
         this.parent = configs.parent;
+        this.input = configs.input;
         this.blocks = new Array2D(9, 9);
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'field';
@@ -12,8 +13,13 @@ class Field {
 
     initialize() {
         this.createBlocks();
-        this.plantMines();
+        this.putMines();
         this.setNearbyMines();
+    };
+
+    update() {
+        let blocksTemp = this.blocks.toArray1D();
+        for(let i in blocksTemp) blocksTemp[i].update(); 
     };
 
     createBlocks() {
@@ -29,6 +35,7 @@ class Field {
                     column: j,
                     zoom : this.zoom,
                     parent : this,
+                    input : this.input,
                 }
                 let block = new Block(blockConfigs);
                 htmlRowElement.appendChild(block.htmlElement);
@@ -37,7 +44,7 @@ class Field {
         }
     };
 
-    plantMines() {
+    putMines() {
         let blocksTemp = this.blocks.toArray1D();
         let minesRemaining = this.mines;
         
@@ -55,20 +62,45 @@ class Field {
                 this.blocks[i][j].nearbyMines = this.countNearbyMines(this.blocks[i][j]);
     };
 
-    countNearbyMines(block) {
+    getNearbyBlocks(block) {
         let r = block.row;
         let c = block.column;
+        let blockList = [];
+
+        if (c > 0) blockList.push(this.blocks[r][c-1]);
+        if (c > 0 && r > 0) blockList.push(this.blocks[r-1][c-1]);
+        if (r > 0) blockList.push(this.blocks[r-1][c]);
+        if (c < this.columns-1 && r > 0) blockList.push(this.blocks[r-1][c+1]);
+        if (c < this.columns-1) blockList.push(this.blocks[r][c+1]);
+        if (c < this.columns-1 && r < this.rows-1) blockList.push(this.blocks[r+1][c+1]);
+        if (r < this.rows-1) blockList.push(this.blocks[r+1][c]);
+        if (r < this.rows-1 && c > 0) blockList.push(this.blocks[r+1][c-1]);
+
+        return blockList;
+    };
+    
+    countNearbyMines(block) {
         let m = 0;
-
-        (c > 0 && this.blocks[r][c-1].haveMine ) ? m++ : false; //Left
-        (c > 0 && r > 0 && this.blocks[r-1][c-1].haveMine ) ? m++ : false; // Left + Up
-        (r > 0 && this.blocks[r-1][c].haveMine ) ? m++ : false; //Up
-        (c < this.columns-1 && r > 0 && this.blocks[r-1][c+1].haveMine ) ? m++ : false; //Up + Right
-        (c < this.columns-1 && this.blocks[r][c+1].haveMine ) ? m++ : false; //Right
-        (c < this.columns-1 && r < this.rows-1 && this.blocks[r+1][c+1].haveMine ) ? m++ : false; //Right + Down
-        (r < this.rows-1 && this.blocks[r+1][c].haveMine ) ? m++ : false; //Down
-        (r < this.rows-1 && c > 0 && this.blocks[r+1][c-1].haveMine ) ? m++ : false; //Down + Right
-
+        let blockList = this.getNearbyBlocks(block);
+        for (let i in blockList) if (blockList[i].haveMine) m++;
         return m;
+    };
+
+    showNearbyBlocks(block) {
+        let blockList = this.getNearbyBlocks(block);
+        for (let i in blockList) blockList[i].select();
+    };
+
+    unshowNearbyBlocks(block) {
+        let blockList = this.getNearbyBlocks(block);
+        for (let i in blockList) blockList[i].unselect();
+    };
+
+    recursiveOpen(block) {
+        let nearbyBlocks = this.getNearbyBlocks(block);
+        for (let i in nearbyBlocks) {
+            let b = nearbyBlocks[i];
+            if (!b.haveMine && b.status == "close") b.open();
+        }
     };
 }
