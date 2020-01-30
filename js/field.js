@@ -6,7 +6,7 @@ class Field {
         this.mines = configs.mines;
         this.parent = configs.parent;
         this.input = configs.input;
-        this.blocks = new Array2D(9, 9);
+        this.blocks = new Array2D(this.rows, this.columns);
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'field';
     };
