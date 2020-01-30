@@ -1,0 +1,37 @@
+body {
+    background-color: black;
+    padding: 20px;
+}
+
+#game {
+    display: inline-block;
+    background-color: #bdbdbd;
+    border-left: 5px solid white;
+    border-top: 5px solid white;
+    border-right: 5px solid #7b7b7b;
+    border-bottom: 5px solid #7b7b7b;
+    padding: 12px;
+}
+
+#header {
+    background-color: #bdbdbd;
+    border-left: 5px solid gray;
+    border-top: 5px solid gray;
+    border-right: 5px solid white;
+    border-bottom: 5px solid white;
+    margin-bottom: 12px;
+    height: 75px;
+}
+
+#field {
+    border-left: 5px solid gray;
+    border-top: 5px solid gray;
+    border-right: 5px solid white;
+    border-bottom: 5px solid white;
+}
+
+.row {
+    display: flex;
+}
+
+
