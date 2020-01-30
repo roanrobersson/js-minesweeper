@@ -56,29 +56,24 @@ class Field {
     };
 
     setNearbyMines() {
-        let rows = this.blocks.length;
-        let columns = this.blocks[0].length;
-
-        for(let i = 0; i < rows; i++) {
-            for(let j = 0; j < columns; j++) {
+        for(let i = 0; i < this.blocks.length; i++) 
+            for(let j = 0; j < this.blocks[0].length; j++) 
                 this.blocks[i][j].nearbyMines = this.countNearbyMines(this.blocks[i][j]);
-            }
-        }
     };
 
     countNearbyMines(block) {
-        let i = block.row;
-        let j = block.column;
+        let r = block.row;
+        let c = block.column;
         let m = 0;
 
-        (j > 0 && this.blocks[i][j-1].haveMine ) ? m++ : false; //Left
-        (j > 0 && i > 0 && this.blocks[i-1][j-1].haveMine ) ? m++ : false; // Left + Up
-        (i > 0 && this.blocks[i-1][j].haveMine ) ? m++ : false; //Up
-        (j < this.columns-1 && i > 0 && this.blocks[i-1][j+1].haveMine ) ? m++ : false; //Up + Right
-        (j < this.columns-1 && this.blocks[i][j+1].haveMine ) ? m++ : false; //Right
-        (j < this.columns-1 && i < this.rows-1 && this.blocks[i+1][j+1].haveMine ) ? m++ : false; //Right + Down
-        (i < this.rows-1 && this.blocks[i+1][j].haveMine ) ? m++ : false; //Down
-        (i < this.rows-1 && j > 0 && this.blocks[i+1][j-1].haveMine ) ? m++ : false; //Down + Right
+        (c > 0 && this.blocks[r][c-1].haveMine ) ? m++ : false; //Left
+        (c > 0 && r > 0 && this.blocks[r-1][c-1].haveMine ) ? m++ : false; // Left + Up
+        (r > 0 && this.blocks[r-1][c].haveMine ) ? m++ : false; //Up
+        (c < this.columns-1 && r > 0 && this.blocks[r-1][c+1].haveMine ) ? m++ : false; //Up + Right
+        (c < this.columns-1 && this.blocks[r][c+1].haveMine ) ? m++ : false; //Right
+        (c < this.columns-1 && r < this.rows-1 && this.blocks[r+1][c+1].haveMine ) ? m++ : false; //Right + Down
+        (r < this.rows-1 && this.blocks[r+1][c].haveMine ) ? m++ : false; //Down
+        (r < this.rows-1 && c > 0 && this.blocks[r+1][c-1].haveMine ) ? m++ : false; //Down + Right
 
         return m;
     };
