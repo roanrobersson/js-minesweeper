@@ -3,7 +3,6 @@ const MOUSE_RIGHT = 2;
 var MOUSE_LEFT_DOWN = false;
 var MOUSE_RIGHT_DOWN = false;
 
-
 document.body.onmousedown = (event) => { 
     let button = event.button;
     if (button == MOUSE_LEFT) { MOUSE_LEFT_DOWN = true }
@@ -22,5 +21,3 @@ function getRandomIntInclusive(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
-
-

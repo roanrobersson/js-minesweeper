@@ -5,8 +5,7 @@ class Field {
         this.zoom = configs.zoom;
         this.mines = configs.mines;
         this.parent = configs.parent;
-        this.blocks = []; //Bidimensional array
-        for(let i = 0; i < this.rows; i++) this.blocks[i] = []; //Make bidimensional
+        this.blocks = new Array2D(9, 9);
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'field';
     };
@@ -39,14 +38,9 @@ class Field {
     };
 
     plantMines() {
-        let blocksTemp = [];
+        let blocksTemp = this.blocks.toArray1D();
         let minesRemaining = this.mines;
-
-        //Maps bidimensional to unidimensional array
-        for(let i = 0; i < this.rows; i++) 
-            for(let j = 0; j < this.columns; j++) 
-                blocksTemp.push(this.blocks[i][j]);
-
+        
         while( minesRemaining > 0) {
             let random = getRandomIntInclusive(0, blocksTemp.length-1);
             blocksTemp[random].haveMine = true;
@@ -56,8 +50,8 @@ class Field {
     };
 
     setNearbyMines() {
-        for(let i = 0; i < this.blocks.length; i++) 
-            for(let j = 0; j < this.blocks[0].length; j++) 
+        for(let i in this.blocks) 
+            for(let j in this.blocks[0]) 
                 this.blocks[i][j].nearbyMines = this.countNearbyMines(this.blocks[i][j]);
     };
 
