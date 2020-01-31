@@ -6,9 +6,22 @@ class Game {
         this.rows = 9;
         this.zoom = 2;
         this.mines = 10;
+        this.scoreboard = null;
+        this.field = null;
     };
 
     initialize() {
+        //Create Scoreboard
+        let scoreboardConfigs = {
+            zoom : this.zoom,
+            parent : this,
+            input : this.input,
+        }
+        this.scoreboard = new Scoreboard(scoreboardConfigs);
+        this.htmlElement.appendChild(this.scoreboard.htmlElement);
+        this.scoreboard.initialize();
+
+        //Create Field
         let fieldConfigs = {
             columns : this.columns,
             rows : this.rows,
@@ -17,16 +30,11 @@ class Game {
             parent : this,
             input : this.input,
         }
-
-        let header = document.createElement("div");
-        header.id = 'header';
-        this.htmlElement.appendChild(header);
-
         this.field = new Field(fieldConfigs);
         this.htmlElement.appendChild(this.field.htmlElement);
         this.field.initialize();
-        this.update();
-
+        
+        //Main loop
         var loop = () => {
             this.update();
             requestAnimationFrame(loop);
@@ -36,6 +44,7 @@ class Game {
 
     update() {
         this.input.update();
+        this.scoreboard.update();
         this.field.update();
     };
 

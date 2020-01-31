@@ -38,6 +38,7 @@ class Field {
                     input : this.input,
                 }
                 let block = new Block(blockConfigs);
+                block.initialize();
                 htmlRowElement.appendChild(block.htmlElement);
                 this.blocks[i][j] = block;
             }

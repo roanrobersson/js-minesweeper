@@ -13,14 +13,16 @@ body {
     padding: 12px;
 }
 
-#header {
+#scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #bdbdbd;
     border-left: 5px solid gray;
     border-top: 5px solid gray;
     border-right: 5px solid white;
     border-bottom: 5px solid white;
-    margin-bottom: 12px;
-    height: 75px;
+    padding: 10px;
 }
 
 #field {

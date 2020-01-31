@@ -11,7 +11,9 @@ class Block {
         this.status = "close"; //close|open|flag|interrogation|selected
         this.showingNearbyBlocks = false;
         this.mouseOverHere = false;
+    };
 
+    initialize() {
         //onmouseenter
         this.htmlElement.onmouseenter = () => {
             let mouseLeftDown = this.input.pressed[MOUSE_LEFT];
@@ -65,22 +67,22 @@ class Block {
     updateGraphics() {
         switch (this.status) {
             case "open":
-                if (this.haveMine) this.setImage("mine_explosion");
-                else if (this.nearbyMines > 0) this.setImage(this.nearbyMines); 
-                else this.setImage("open_block");  
+                if (this.haveMine) setImage("mine_explosion", this.htmlElement, this.zoom);  
+                else if (this.nearbyMines > 0) setImage(this.nearbyMines, this.htmlElement, this.zoom);  
+                else setImage("open_block", this.htmlElement, this.zoom);  
                 break;
             case "close":
                 if (this.showingNearbyBlocks) this.setImage("open_block");
-                else this.setImage("block"); 
+                else setImage("block", this.htmlElement, this.zoom);  
                 break;
             case "selected":
-                this.setImage("open_block");  
+                setImage("open_block", this.htmlElement, this.zoom);  
                 break;
             case "flag":
-                this.setImage("flag");
+                setImage("flag", this.htmlElement, this.zoom);  
                 break;
             case "interrogation":
-                this.setImage("interrogation");
+                setImage("interrogation", this.htmlElement, this.zoom);  
                 break;
             default:
                 break;
@@ -130,16 +132,6 @@ class Block {
     unmark () {
         if (this.status != "interrogation") return;
         this.status = "close";
-    };
-
-    setImage(imgName) {
-        let oldImgName = this.htmlElement.src.replace(/^.*[\\\/]/, '').replace(".png", "");
-        if (oldImgName == imgName) return; 
-        this.htmlElement.src = 'img/' + imgName +'.png';
-        this.htmlElement.onload = () => {
-            this.htmlElement.width = this.htmlElement.naturalWidth * this.zoom;
-            this.htmlElement.height = this.htmlElement.naturalHeight * this.zoom;
-        };
     };
     
 }
