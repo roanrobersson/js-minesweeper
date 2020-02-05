@@ -6,6 +6,7 @@ class Block {
         this.row = configs.row;
         this.column = configs.column;
         this.zoom = configs.zoom;
+        this.game = configs.game;
         this.htmlElement = document.createElement("img");
         this.input = configs.input;
         this.status = "close"; //close|open|flag|interrogation|selected
@@ -93,11 +94,18 @@ class Block {
         if (this.status == "open") return
         this.status = "open";
         if (!this.haveMine && this.nearbyMines == 0) this.parent.recursiveOpen(this);
+        this.game.anyBlockSelected = false;
+        if (!this.game.started) this.game.start();
+        if (this.haveMine) {
+            this.game.win = false;
+            this.game.end();
+        }
     };
 
     select() {
         if (this.status != "close") return;
         this.status = "selected";
+        this.game.anyBlockSelected = true;
     };
 
     showNearbyBlocks() {
@@ -117,16 +125,19 @@ class Block {
     unselect() {
         if (this.status != "selected") return;
         this.status = "close";
+        this.game.anyBlockSelected = false;
     };
 
     markWithFlag() {
         if (this.status != "close") return;
         this.status = "flag";
+        this.game.markedBlocks++;
     };
 
     markWithInterrogation() {
         if (this.status != "flag") return;
         this.status = "interrogation";
+        this.game.markedBlocks--;
     };
    
     unmark () {

@@ -6,6 +6,7 @@ class Field {
         this.mines = configs.mines;
         this.parent = configs.parent;
         this.input = configs.input;
+        this.game = configs.game;
         this.blocks = new Array2D(this.rows, this.columns);
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'field';
@@ -18,6 +19,7 @@ class Field {
     };
 
     update() {
+        if (this.game.ended) return;
         let blocksTemp = this.blocks.toArray1D();
         for(let i in blocksTemp) blocksTemp[i].update(); 
     };
@@ -36,6 +38,7 @@ class Field {
                     zoom : this.zoom,
                     parent : this,
                     input : this.input,
+                    game : this.game,
                 }
                 let block = new Block(blockConfigs);
                 block.initialize();
@@ -103,5 +106,26 @@ class Field {
             let b = nearbyBlocks[i];
             if (!b.haveMine && b.status == "close") b.open();
         }
+    };
+
+    revealMines() {
+        for(let i in this.blocks) 
+            for(let j in this.blocks[0]) {
+                const b = this.blocks[i][j];
+                if (!b.haveMine && b.status == "flag") setImage("wrong_mine_mark", b.htmlElement, this.zoom);
+                if (b.haveMine && b.status == "close") setImage("mine", b.htmlElement, this.zoom);
+            }
+    };
+
+    reboot() {
+        for(let i in this.blocks) 
+            for(let j in this.blocks[0]) {
+                const b = this.blocks[i][j];
+                b.status = "close";
+                b.haveMine = false;
+            }
+                
+        this.putMines();
+        this.setNearbyMines();
     };
 }
