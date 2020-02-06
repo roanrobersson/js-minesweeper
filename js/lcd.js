@@ -24,10 +24,10 @@ class Lcd {
 
     update() {
         if (game.ended) return;
-        let v = (this.value < 1000) ?  this.roundToThreeDecimal(this.value) : 999;
-        this.cell1Digit = v[0];
-        this.cell2Digit = v[1];
-        this.cell3Digit = v[2];
+        let valueString = (this.value < 1000) ? this.roundToThreeDecimal(this.value) : "999";
+        this.cell1Digit = valueString[0];
+        this.cell2Digit = valueString[1];
+        this.cell3Digit = valueString[2];
         this.updateGraphics();
     };
 
