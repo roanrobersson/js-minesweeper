@@ -2,7 +2,7 @@ class Block {
     constructor (configs) {
         this.field = configs.field;
         this.haveMine = configs.haveMine;
-        this.nearbyMines = configs.nearbyMines;
+        this.nearbyMinesCount = configs.nearbyMinesCount;
         this.row = configs.row;
         this.column = configs.column;
         this.htmlElement = document.createElement("img");
@@ -23,18 +23,9 @@ class Block {
         this.htmlElement.onmouseleave = () => { 
             this.mouseOverHere = false;
             if (this.status == "selected") this.unselect();
-            if (this.showingNearbyBlocks) this.unshowNearbyBlocks();
+            if (this.showingNearbyBlocks) this._unshowNearbyBlocks();
         };
     };
-
-    /*
-    close() {
-        if (this.status == "close") return;
-        this.setImage("block");
-        this.oldStatus = "close";
-        this.status = "close";
-    };
-    */
 
     update() {
         if (this.mouseOverHere) {
@@ -46,8 +37,8 @@ class Block {
             let mouseRightFired = game.input.fired[MOUSE_RIGHT];
 
 
-            if (mouseLeftPressed && mouseRightPressed) this.showNearbyBlocks();
-            if (mouseLeftWasDown && mouseRightWasDown && !mouseLeftPressed && !mouseRightPressed) this.unshowNearbyBlocks();
+            if (mouseLeftPressed && mouseRightPressed) this._showNearbyBlocks();
+            if (mouseLeftWasDown && mouseRightWasDown && !mouseLeftPressed && !mouseRightPressed) this._unshowNearbyBlocks();
             if (mouseLeftFired && !mouseRightPressed) if (this.status == "close") this.select();
                
             if (mouseRightFired && !mouseLeftPressed) {
@@ -59,14 +50,14 @@ class Block {
             if (this.status == "selected" && !mouseLeftPressed && mouseLeftWasDown) this.open();
         }
 
-        this.updateGraphics();
+        this._updateGraphics();
     };
 
-    updateGraphics() {
+    _updateGraphics() {
         switch (this.status) {
             case "open":
                 if (this.haveMine) setImage("mine_explosion", this.htmlElement, game.zoom);  
-                else if (this.nearbyMines > 0) setImage(this.nearbyMines, this.htmlElement, game.zoom);  
+                else if (this.nearbyMinesCount > 0) setImage(this.nearbyMinesCount, this.htmlElement, game.zoom);  
                 else setImage("open_block", this.htmlElement, game.zoom);  
                 break;
             case "close":
@@ -87,11 +78,24 @@ class Block {
         }
     };
 
+    _showNearbyBlocks() {
+        if (this.showingNearbyBlocks) return;
+        this.select();
+        this.field.showNearbyBlocks(this);
+        this.showingNearbyBlocks = true;
+    };
+
+    _unshowNearbyBlocks() {
+        if (!this.showingNearbyBlocks) return;
+        this.unselect();
+        this.field.unshowNearbyBlocks(this);
+        this.showingNearbyBlocks = false;
+    };
+
     open() {
         if (this.status == "open") return
         this.status = "open";
-        if (!this.haveMine && this.nearbyMines == 0) this.field.recursiveOpen(this);
-        this.field.anyBlockSelected = false;
+        if (!this.haveMine && this.nearbyMinesCount == 0) this.field.recursiveOpenBlocks(this);
         if (!game.started) game.start();
         if (this.haveMine) {
             game.win = false;
@@ -102,27 +106,11 @@ class Block {
     select() {
         if (this.status != "close") return;
         this.status = "selected";
-        this.field.anyBlockSelected = true;
-    };
-
-    showNearbyBlocks() {
-        if (this.showingNearbyBlocks) return;
-        this.select();
-        this.field.showNearbyBlocks(this);
-        this.showingNearbyBlocks = true;
-    };
-
-    unshowNearbyBlocks() {
-        if (!this.showingNearbyBlocks) return;
-        this.unselect();
-        this.field.unshowNearbyBlocks(this);
-        this.showingNearbyBlocks = false;
     };
 
     unselect() {
         if (this.status != "selected") return;
         this.status = "close";
-        this.field.anyBlockSelected = false;
     };
 
     markWithFlag() {
@@ -141,5 +129,4 @@ class Block {
         if (this.status != "interrogation") return;
         this.status = "close";
     };
-    
 }
