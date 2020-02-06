@@ -2,14 +2,11 @@ class Field {
     constructor (configs) {
         this.columns = configs.columns;
         this.rows = configs.rows;
-        this.zoom = configs.zoom;
         this.mines = configs.mines;
-        this.parent = configs.parent;
-        this.input = configs.input;
-        this.game = configs.game;
         this.blocks = new Array2D(this.rows, this.columns);
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'field';
+        this.anyBlockSelected = false; 
     };
 
     initialize() {
@@ -19,7 +16,7 @@ class Field {
     };
 
     update() {
-        if (this.game.ended) return;
+        if (game.ended) return;
         let blocksTemp = this.blocks.toArray1D();
         for(let i in blocksTemp) blocksTemp[i].update(); 
     };
@@ -35,10 +32,7 @@ class Field {
                     haveMine : false,
                     row: i,
                     column: j,
-                    zoom : this.zoom,
-                    parent : this,
-                    input : this.input,
-                    game : this.game,
+                    field : this,
                 }
                 let block = new Block(blockConfigs);
                 block.initialize();
@@ -112,12 +106,12 @@ class Field {
         for(let i in this.blocks) 
             for(let j in this.blocks[0]) {
                 const b = this.blocks[i][j];
-                if (!b.haveMine && b.status == "flag") setImage("wrong_mine_mark", b.htmlElement, this.zoom);
-                if (b.haveMine && b.status == "close") setImage("mine", b.htmlElement, this.zoom);
+                if (!b.haveMine && b.status == "flag") setImage("wrong_mine_mark", b.htmlElement, game.zoom);
+                if (b.haveMine && b.status == "close") setImage("mine", b.htmlElement, game.zoom);
             }
     };
 
-    reboot() {
+    recreate() {
         for(let i in this.blocks) 
             for(let j in this.blocks[0]) {
                 const b = this.blocks[i][j];

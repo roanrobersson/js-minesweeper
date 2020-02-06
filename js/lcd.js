@@ -1,8 +1,5 @@
 class Lcd {
-    constructor (configs) {
-        this.zoom = configs.zoom;
-        this.parent = configs.parent;
-        this.game = configs.game;
+    constructor () {
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'lcd';
         this.cell1 = null;
@@ -26,7 +23,7 @@ class Lcd {
     };
 
     update() {
-        if (this.game.ended) return;
+        if (game.ended) return;
         let v = (this.value < 1000) ?  this.roundToThreeDecimal(this.value) : 999;
         this.cell1Digit = v[0];
         this.cell2Digit = v[1];
@@ -35,9 +32,9 @@ class Lcd {
     };
 
     updateGraphics() {
-       setImage("lcd_" + this.cell1Digit, this.cell1, this.zoom);
-       setImage("lcd_" + this.cell2Digit, this.cell2, this.zoom);
-       setImage("lcd_" + this.cell3Digit, this.cell3, this.zoom);
+       setImage("lcd_" + this.cell1Digit, this.cell1, game.zoom);
+       setImage("lcd_" + this.cell2Digit, this.cell2, game.zoom);
+       setImage("lcd_" + this.cell3Digit, this.cell3, game.zoom);
     };
 
     roundToThreeDecimal(number) {

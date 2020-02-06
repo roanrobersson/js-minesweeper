@@ -1,9 +1,5 @@
 class Scoreboard {
-    constructor (configs) {
-        this.zoom = configs.zoom;
-        this.parent = configs.parent;
-        this.input = configs.input;
-        this.game = configs.game;
+    constructor () {
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'scoreboard';
         this.lcdMines = null;
@@ -12,38 +8,22 @@ class Scoreboard {
     };
 
     initialize() {
-        let lcdMinesConfigs = {
-            zoom : this.zoom,
-            parent : this,
-            game : this.game,
-        }
-        this.lcdMines = new Lcd(lcdMinesConfigs);
+        this.lcdMines = new Lcd();
         this.htmlElement.appendChild(this.lcdMines.htmlElement);
         this.lcdMines.initialize();
 
-        let buttonConfigs = {
-            zoom : this.zoom,
-            parent : this,
-            input : this.input,
-            game : this.game,
-        }
-        this.button = new Button(buttonConfigs);
+        this.button = new Button();
         this.htmlElement.appendChild(this.button.htmlElement);
         this.button.initialize();
 
-        let lcdTimeConfigs = {
-            zoom : this.zoom,
-            parent : this,
-            game : this.game,
-        }
-        this.lcdTime = new Lcd(lcdTimeConfigs);
+        this.lcdTime = new Lcd();
         this.htmlElement.appendChild(this.lcdTime.htmlElement);
         this.lcdTime.initialize();
     };
 
     update() {
-        this.lcdMines.value = this.game.mines - this.game.markedBlocks;
-        this.lcdTime.value = this.game.time;
+        this.lcdMines.value = game.mines - game.markedBlocks;
+        this.lcdTime.value = game.time;
 
         this.lcdMines.update();
         this.button.update();

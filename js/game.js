@@ -6,26 +6,19 @@ class Game {
         this.rows = 9;
         this.zoom = 2;
         this.mines = Math.floor( (this.rows * this.columns) / 8 );
-        this.markedBlocks= 0;
+        this.markedBlocks = 0;
         this.scoreboard = null;
         this.field = null;
         this.started = false;
         this.ended = false;
         this.win = false;
-        this.anyBlockSelected = false; 
         this.time = 0;
         this.timer = null;
     };
 
     initialize() {
         //Create Scoreboard
-        let scoreboardConfigs = {
-            zoom : this.zoom,
-            parent : this,
-            input : this.input,
-            game : this,
-        }
-        this.scoreboard = new Scoreboard(scoreboardConfigs);
+        this.scoreboard = new Scoreboard();
         this.htmlElement.appendChild(this.scoreboard.htmlElement);
         this.scoreboard.initialize();
 
@@ -33,11 +26,7 @@ class Game {
         let fieldConfigs = {
             columns : this.columns,
             rows : this.rows,
-            zoom : this.zoom,
             mines : this.mines,
-            parent : this,
-            input : this.input,
-            game : this,
         }
         this.field = new Field(fieldConfigs);
         this.htmlElement.appendChild(this.field.htmlElement);
@@ -73,7 +62,7 @@ class Game {
         this.started = false;
         this.ended = false;
         this.markedBlocks = 0;
-        this.field.reboot();
+        this.field.recreate();
     };
 
     end() {
