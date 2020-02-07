@@ -6,7 +6,7 @@ class Game {
         this.rows = 9;
         this.zoom = 2;
         this.mines = Math.floor( (this.rows * this.columns) / 8 );
-        this.markedBlocks = 0;
+        this.blocksMarkedWithFlag = 0;
         this.scoreboard = null;
         this.field = null;
         this.started = false;
@@ -14,15 +14,14 @@ class Game {
         this.win = false;
         this.time = 0;
         this.timer = null;
+        this.anyBlockSelected = false;
     };
 
     initialize() {
-        //Create Scoreboard
         this.scoreboard = new Scoreboard();
         this.htmlElement.appendChild(this.scoreboard.htmlElement);
         this.scoreboard.initialize();
 
-        //Create Field
         let fieldConfigs = {
             columns : this.columns,
             rows : this.rows,
@@ -32,7 +31,6 @@ class Game {
         this.htmlElement.appendChild(this.field.htmlElement);
         this.field.initialize();
 
-        //Main loop
         var loop = () => {
             this.update();
             requestAnimationFrame(loop);
@@ -61,13 +59,14 @@ class Game {
         this.time = 0;
         this.started = false;
         this.ended = false;
-        this.markedBlocks = 0;
-        this.field.recreate();
+        this.blocksMarkedWithFlag = 0;
+        this.win = false;
+        this.field.recreateField();
     };
 
     end() {
         this.started = false;
         this.ended = true;
-        this.field.revealMines();
+        if (!game.win) this.field.revealAllField();
     };
 }

@@ -12,8 +12,9 @@ class Button {
 
         //onmouseleave
         this.htmlElement.onmouseleave = (ev) => { 
-            if (ev.button == MOUSE_LEFT && this.status == "") {
+            if (ev.button == MOUSE_LEFT && this.status == "smile") {
                 this.status = "smile";
+                this.pressed = false;
             }
         };
 

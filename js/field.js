@@ -6,12 +6,11 @@ class Field {
         this.blocks = new Array2D(this.rows, this.columns);
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'field';
+        this.lastBlockClicked = null;
     };
 
     initialize() {
-        this._createBlocks();
-        this._putMines();
-        this._setNearbyMinesCount();
+        this._createAllBlocks();
     };
 
     update() {
@@ -20,7 +19,7 @@ class Field {
         for(const i in blocksTemp) blocksTemp[i].update(); 
     };
 
-    _createBlocks() {
+    _createAllBlocks() {
         for(let i = 0; i < this.rows; i++) {
             let htmlRowElement = document.createElement("div");
             htmlRowElement.classList.add('row');
@@ -39,6 +38,8 @@ class Field {
                 this.blocks[i][j] = block;
             }
         }
+        this._putMines();
+        this._setNearbyMinesCount();
     };
 
     _putMines() {
@@ -79,46 +80,58 @@ class Field {
     _getNearbyMinesCount(block) {
         let m = 0;
         let blockList = this._getNearbyBlocks(block);
-        for (const i in blockList) if (blockList[i].haveMine) m++;
+        for (const i in blockList) 
+            if (blockList[i].haveMine) m++;
         return m;
+    };
+
+    _removeAllBlocks() {
+        const e = this.htmlElement;
+        while (e.firstChild) 
+            e.removeChild(e.firstChild);
     };
 
     showNearbyBlocks(block) {
         let blockList = this._getNearbyBlocks(block);
-        for (const i in blockList) blockList[i].select();
+        for (const i in blockList) {
+            const b = blockList[i];
+            if (!b.openned && b.mark == null) b.select();
+        }     
     };
 
     unshowNearbyBlocks(block) {
         let blockList = this._getNearbyBlocks(block);
-        for (const i in blockList) blockList[i].unselect();
+        for (const i in blockList) {
+            const b = blockList[i];
+            if (b.selected) b.unselect();
+        }
     };
 
     recursiveOpenBlocks(block) {
         let nearbyBlocks = this._getNearbyBlocks(block);
         for (const i in nearbyBlocks) {
             let b = nearbyBlocks[i];
-            if (!b.haveMine && b.status == "close") b.open();
+            if (!b.haveMine && !b.openned && b.mark == null) b.open();
         }
     };
 
-    revealMines() {
+    revealAllField() {
         for(const i in this.blocks) 
-            for(const j in this.blocks[0]) {
-                const b = this.blocks[i][j];
-                if (!b.haveMine && b.status == "flag") setImage("wrong_mine_mark", b.htmlElement, game.zoom);
-                if (b.haveMine && b.status == "close") setImage("mine", b.htmlElement, game.zoom);
-            }
+            for(const j in this.blocks[0]) 
+                this.blocks[i][j].reveal();
     };
 
-    recreate() {
-        for(const i in this.blocks) 
-            for(const j in this.blocks[0]) {
-                const b = this.blocks[i][j];
-                b.status = "close";
-                b.haveMine = false;
-            }
-                
-        this._putMines();
-        this._setNearbyMinesCount();
+    recreateField() {
+        this._removeAllBlocks();
+        this._createAllBlocks();
     };
+
+    allSecureBlocksOppenned() {
+        let count = 0;
+        let blocksTemp = this.blocks.toArray1D();
+        for(const i in blocksTemp) 
+            if (blocksTemp[i].openned)
+                count++;
+        return count == blocksTemp.length - game.mines;
+    }
 }

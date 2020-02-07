@@ -22,7 +22,7 @@ class Scoreboard {
     };
 
     update() {
-        this.lcdMines.value = game.mines - game.markedBlocks;
+        this.lcdMines.value = game.mines - game.blocksMarkedWithFlag;
         this.lcdTime.value = game.time;
 
         this.lcdMines.update();

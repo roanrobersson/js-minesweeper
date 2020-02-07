@@ -9,25 +9,34 @@ class Block {
         this.status = "close"; //close|open|flag|interrogation|selected
         this.showingNearbyBlocks = false;
         this.mouseOverHere = false;
+        this.openned = false;
+        this.selected = false;
+        this.mark = null;
+        this.mouseEntered = false;
+        this.mouseLeaved = false;
     };
 
     initialize() {
-        //onmouseenter
-        this.htmlElement.onmouseenter = () => {
-            let mouseLeftDown = game.input.pressed[MOUSE_LEFT];
-            this.mouseOverHere = true;
-            if (this.status == "close" && mouseLeftDown) this.select();
-        };
-
-        //onmouseleave
-        this.htmlElement.onmouseleave = () => { 
-            this.mouseOverHere = false;
-            if (this.status == "selected") this.unselect();
-            if (this.showingNearbyBlocks) this._unshowNearbyBlocks();
-        };
+        setImage("block", this.htmlElement, game.zoom);  
+        this.htmlElement.onmouseenter = () => { this.mouseEntered = true };
+        this.htmlElement.onmouseleave = () => { this.mouseLeaved = true };
     };
 
-    update() {
+    update() {            
+        if (this.mouseEntered) {
+            let mouseLeftDown = game.input.pressed[MOUSE_LEFT];
+            this.mouseOverHere = true;
+            if (mouseLeftDown && !this.openned && this.mark == null) this.select();
+            this.mouseEntered = false;
+        }
+
+        if (this.mouseLeaved) {
+            this.mouseOverHere = false;
+            if (this.selected) this.unselect();
+            if (this.showingNearbyBlocks) this._unshowNearbyBlocks();
+            this.mouseLeaved = false;
+        }
+
         if (this.mouseOverHere) {
             let mouseLeftPressed = game.input.pressed[MOUSE_LEFT];
             let mouseRightPressed = game.input.pressed[MOUSE_RIGHT];
@@ -36,97 +45,87 @@ class Block {
             let mouseLeftFired = game.input.fired[MOUSE_LEFT];
             let mouseRightFired = game.input.fired[MOUSE_RIGHT];
 
-
             if (mouseLeftPressed && mouseRightPressed) this._showNearbyBlocks();
-            if (mouseLeftWasDown && mouseRightWasDown && !mouseLeftPressed && !mouseRightPressed) this._unshowNearbyBlocks();
-            if (mouseLeftFired && !mouseRightPressed) if (this.status == "close") this.select();
+            if (mouseLeftWasDown && mouseRightWasDown && !mouseLeftPressed && !mouseRightPressed && this.showingNearbyBlocks) this._unshowNearbyBlocks();
+            if (mouseLeftFired && !mouseRightPressed && !this.openned && this.mark == null) this.select();
                
-            if (mouseRightFired && !mouseLeftPressed) {
-                if (this.status == "close") this.markWithFlag();
-                else if (this.status == "flag") this.markWithInterrogation();
-                else if (this.status == "interrogation") this.unmark();
-            }
+            if (mouseRightFired && !mouseLeftPressed && !this.openned) this.toggleMark();
     
-            if (this.status == "selected" && !mouseLeftPressed && mouseLeftWasDown) this.open();
+            if (!mouseLeftPressed && mouseLeftWasDown && this.selected && !this.showingNearbyBlocks) this.open();
         }
 
-        this._updateGraphics();
-    };
-
-    _updateGraphics() {
-        switch (this.status) {
-            case "open":
-                if (this.haveMine) setImage("mine_explosion", this.htmlElement, game.zoom);  
-                else if (this.nearbyMinesCount > 0) setImage(this.nearbyMinesCount, this.htmlElement, game.zoom);  
-                else setImage("open_block", this.htmlElement, game.zoom);  
-                break;
-            case "close":
-                if (this.showingNearbyBlocks) this.setImage("open_block");
-                else setImage("block", this.htmlElement, game.zoom);  
-                break;
-            case "selected":
-                setImage("open_block", this.htmlElement, game.zoom);  
-                break;
-            case "flag":
-                setImage("flag", this.htmlElement, game.zoom);  
-                break;
-            case "interrogation":
-                setImage("interrogation", this.htmlElement, game.zoom);  
-                break;
-            default:
-                break;
-        }
     };
 
     _showNearbyBlocks() {
-        if (this.showingNearbyBlocks) return;
-        this.select();
+        if (!this.openned && this.mark == null) this.select();
         this.field.showNearbyBlocks(this);
         this.showingNearbyBlocks = true;
     };
 
     _unshowNearbyBlocks() {
-        if (!this.showingNearbyBlocks) return;
-        this.unselect();
+        if (!this.openned && this.mark == null) this.unselect();
         this.field.unshowNearbyBlocks(this);
         this.showingNearbyBlocks = false;
     };
 
     open() {
-        if (this.status == "open") return
-        this.status = "open";
+        this.openned = true; // Keep this on top of method
+        this.selected = false;
+        this.mark = null;
+        game.anyBlockSelected = false;
+        if (this.haveMine && this.field.lastBlockClicked == this ) setImage("mine_explosion", this.htmlElement, game.zoom);  
+        else if (this.haveMine) setImage("mine", this.htmlElement, game.zoom);  
+        else if (this.nearbyMinesCount > 0) setImage(this.nearbyMinesCount, this.htmlElement, game.zoom);  
+        else setImage("open_block", this.htmlElement, game.zoom);  
+
         if (!this.haveMine && this.nearbyMinesCount == 0) this.field.recursiveOpenBlocks(this);
         if (!game.started) game.start();
         if (this.haveMine) {
             game.win = false;
             game.end();
         }
+        if (this.field.allSecureBlocksOppenned()) {
+            game.win = true;
+            game.end();
+        }
+    };
+
+    reveal() {
+        if (this.haveMine && this.field.lastBlockClicked != this && this.mark != "flag") setImage("mine", this.htmlElement, game.zoom);
+        else if (!this.haveMine && this.mark == "flag") setImage("wrong_mine_mark", this.htmlElement, game.zoom);
+
+        this.selected = false;
+        this.mark = null;
+        this.openned = true;
     };
 
     select() {
-        if (this.status != "close") return;
-        this.status = "selected";
+        game.anyBlockSelected = true;
+        this.field.lastBlockClicked = this;
+        setImage("open_block", this.htmlElement, game.zoom);
+        this.selected = true;
     };
 
     unselect() {
-        if (this.status != "selected") return;
-        this.status = "close";
+        game.anyBlockSelected = false;
+        setImage("block", this.htmlElement, game.zoom);
+        this.selected = false;
     };
 
-    markWithFlag() {
-        if (this.status != "close") return;
-        this.status = "flag";
-        game.markedBlocks++;
-    };
-
-    markWithInterrogation() {
-        if (this.status != "flag") return;
-        this.status = "interrogation";
-        game.markedBlocks--;
-    };
-   
-    unmark () {
-        if (this.status != "interrogation") return;
-        this.status = "close";
+    toggleMark() {
+        if (this.mark == null ) {
+            setImage("flag", this.htmlElement, game.zoom);
+            game.blocksMarkedWithFlag++;
+            this.mark = "flag";
+        }
+        else if (this.mark == "flag") {
+            setImage("interrogation", this.htmlElement, game.zoom);
+            game.blocksMarkedWithFlag--;
+            this.mark = "interrogation";
+        }
+        else {
+            setImage("block", this.htmlElement, game.zoom);
+            this.mark = null;
+        }
     };
 }
