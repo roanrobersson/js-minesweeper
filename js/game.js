@@ -50,7 +50,7 @@ class Game {
         clearInterval(this.timer);
         this.timer = setInterval( () => {
             this.time++;
-        }, 1);
+        }, 1000);
         this.time = 0;
         this.started = true;
         this.ended = false;
