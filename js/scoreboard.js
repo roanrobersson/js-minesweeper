@@ -2,6 +2,8 @@ class Scoreboard {
     constructor () {
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'scoreboard';
+        this.htmlElement.style.borderWidth = "inherit"
+        this.htmlElement.style.padding = 5 * game.zoom + "px";
         this.lcdMines = null;
         this.lcdTime = null;
         this.button = null;

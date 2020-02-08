@@ -15,6 +15,8 @@ class Game {
         this.time = 0;
         this.timer = null;
         this.anyBlockSelected = false;
+        this.htmlElement.style.borderWidth = 2 * this.zoom + "px";
+        this.htmlElement.style.padding = 5 * this.zoom + "px";
     };
 
     initialize() {
@@ -48,7 +50,7 @@ class Game {
         clearInterval(this.timer);
         this.timer = setInterval( () => {
             this.time++;
-        }, 1000);
+        }, 1);
         this.time = 0;
         this.started = true;
         this.ended = false;

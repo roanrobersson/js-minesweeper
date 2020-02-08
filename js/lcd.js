@@ -24,19 +24,19 @@ class Lcd {
 
     update() {
         if (game.ended) return;
-        let valueString = (this.value < 1000) ? this.roundToThreeDecimal(this.value) : "999";
+        let valueString = "";
+        if (this.value >= -99 && this.value <= 999) valueString = this.roundToThreeDecimal(this.value)
+        else if (this.value < -99) valueString = "-99";
+        else if (this.value > 999) valueString = "999";
+
         this.cell1Digit = valueString[0];
         this.cell2Digit = valueString[1];
         this.cell3Digit = valueString[2];
-        this.updateGraphics();
+        setImage("lcd_" + this.cell1Digit, this.cell1, game.zoom);
+        setImage("lcd_" + this.cell2Digit, this.cell2, game.zoom);
+        setImage("lcd_" + this.cell3Digit, this.cell3, game.zoom);
     };
-
-    updateGraphics() {
-       setImage("lcd_" + this.cell1Digit, this.cell1, game.zoom);
-       setImage("lcd_" + this.cell2Digit, this.cell2, game.zoom);
-       setImage("lcd_" + this.cell3Digit, this.cell3, game.zoom);
-    };
-
+    
     roundToThreeDecimal(number) {
         return ("000" + number).slice(-3);
     };

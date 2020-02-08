@@ -6,6 +6,7 @@ class Field {
         this.blocks = new Array2D(this.rows, this.columns);
         this.htmlElement = document.createElement("div");
         this.htmlElement.id = 'field';
+        this.htmlElement.style.borderWidth = "inherit";
         this.lastBlockClicked = null;
     };
 

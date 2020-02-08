@@ -12,7 +12,7 @@ class Button {
 
         //onmouseleave
         this.htmlElement.onmouseleave = (ev) => { 
-            if (ev.button == MOUSE_LEFT && this.status == "smile") {
+            if (ev.button == MOUSE_LEFT) {
                 this.status = "smile";
                 this.pressed = false;
             }
@@ -36,41 +36,28 @@ class Button {
     };
 
     update() {
-        if (game.ended){
-            if (game.win) this.status = "win";
-            if (!game.win) this.status = "lose";
-        } else {
-            if (game.anyBlockSelected) {
-                this.status = "openMouth";
-            } else {
-                this.status = "smile";
-            }
-        }
-
-        this.updateGraphics();
-    };
-
-    updateGraphics() {
         if (this.pressed) {
             setImage("button_start_pressed", this.htmlElement, game.zoom);  
             return;
         }
 
-        switch (this.status) {
-            case "smile":
-                setImage("button_start", this.htmlElement, game.zoom);
-                break;
-            case "win":
+        if (game.ended){
+            if (game.win) {
+                this.status = "win";
                 setImage("button_start_game_win", this.htmlElement, game.zoom);
-                break;
-            case "lose":
+            }
+            else {
+                this.status = "lose";
                 setImage("button_start_game_lose", this.htmlElement, game.zoom);
-                break;
-            case "openMouth":
+            }
+        } else {
+            if (game.anyBlockSelected) {
+                this.status = "openMouth";
                 setImage("button_start_open_mouth", this.htmlElement, game.zoom);
-                break;
-            default:
-                break;
+            } else {
+                this.status = "smile";
+                setImage("button_start", this.htmlElement, game.zoom);
+            }
         }
     };
 }
