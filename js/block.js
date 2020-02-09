@@ -6,7 +6,6 @@ class Block {
         this.row = configs.row;
         this.column = configs.column;
         this.htmlElement = document.createElement("img");
-        this.status = "close"; //close|open|flag|interrogation|selected
         this.showingNearbyBlocks = false;
         this.mouseOverHere = false;
         this.openned = false;
@@ -127,5 +126,18 @@ class Block {
             setImage("block", this.htmlElement, game.zoom);
             this.mark = null;
         }
+    };
+
+    resetBlock() {
+        this.haveMine = false;
+        this.nearbyMinesCount = 0;
+        this.showingNearbyBlocks = false;
+        this.mouseOverHere = false;
+        this.selected = false;
+        this.openned = false;
+        this.mark = null;
+        this.mouseEntered = false;
+        this.mouseLeaved = false;
+        setImage("block", this.htmlElement, game.zoom);
     };
 }

@@ -86,12 +86,6 @@ class Field {
         return m;
     };
 
-    _removeAllBlocks() {
-        const e = this.htmlElement;
-        while (e.firstChild) 
-            e.removeChild(e.firstChild);
-    };
-
     showNearbyBlocks(block) {
         let blockList = this._getNearbyBlocks(block);
         for (const i in blockList) {
@@ -123,8 +117,11 @@ class Field {
     };
 
     recreateField() {
-        this._removeAllBlocks();
-        this._createAllBlocks();
+        for(const i in this.blocks) 
+            for(const j in this.blocks[0])
+                this.blocks[i][j].resetBlock();
+        this._putMines();
+        this._setNearbyMinesCount();
     };
 
     allSecureBlocksOppenned() {
