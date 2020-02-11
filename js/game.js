@@ -1,11 +1,11 @@
 class Game {
-    constructor (htmlElementId) {
-        this.htmlElement = document.getElementById(htmlElementId);
+    constructor (configs) {
+        this.htmlElement = configs.htmlElement;
+        this.columns = configs.columns;
+        this.rows = configs.rows;
+        this.zoom = configs.zoom;
+        this.mines = configs.mines;
         this.input = new Input(this.htmlElement);
-        this.columns = 9;
-        this.rows = 9;
-        this.zoom = 2;
-        this.mines = Math.floor( (this.rows * this.columns) / 8 );
         this.blocksMarkedWithFlag = 0;
         this.scoreboard = null;
         this.field = null;
@@ -20,6 +20,12 @@ class Game {
     };
 
     initialize() {
+        //Case (false|0|null|undefined) apply default configs
+        this.columns = this.columns || 9;
+        this.rows = this.rows || 9;
+        this.zoom = this.zoom || 2;
+        this.mines = this.mines || Math.floor( (this.rows * this.columns) / 8 );
+
         this.scoreboard = new Scoreboard();
         this.htmlElement.appendChild(this.scoreboard.htmlElement);
         this.scoreboard.initialize();

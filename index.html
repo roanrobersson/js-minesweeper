@@ -12,6 +12,51 @@
     <div class="container">
         <div id="game"></div>
     </div>
+
+    <div class="modal">
+            <div id="configMenu">
+                <div class="section">
+                    <label class="label">Presset difficulties</label>
+                    <div class="pressetRow row">
+                        <button id="easyPreset" class="button">Easy</button>
+                        <button id="mediumPreset" class="button">Medium</button>
+                        <button id="hardPreset" class="button">Hard</button>
+                    </div>
+                </div>
+                <div class="section">
+                    <label class="label">Field</label>
+                    <div class="fieldRow row">
+                        <label>Rows:</label>
+                        <button id="rowsMinus" class="button">-</button>
+                        <label id="rowsValue" class="value">9</label>
+                        <button id="rowsPlus" class="button">+</button>
+                    </div>
+                    <div class="fieldRow row">
+                        <label>Columns:</label>
+                        <button id="columnsMinus" class="button">-</button>
+                        <label id="columnsValue" class="value">9</label>
+                        <button id="columnsPlus" class="button">+</button>
+                    </div>
+                    <div class="fieldRow row">
+                        <label>Mines:</label>
+                        <button id="minesMinus" class="button">-</button>
+                        <label id="minesValue" class="value">10</label>
+                        <button id="minesPlus" class="button">+</button>
+                    </div>
+                </div>
+                <div class="section">
+                    <label class="label">Zoom</label>
+                    <div class="zoomRow row">
+                        <button id="zoomMinus" class="button">-</button>
+                        <label id="zoomValue" class="value">2x</label>
+                        <button id="zoomPlus" class="button">+</button>
+                    </div>
+                </div>
+                <button id="closeButton" class="button">Close</button>
+            </div>
+    </div>
+    <button id="menuCaller" class="button">Configs</button>
+
 </body>
 <script src="js/array2d.js"></script>
 <script src="js/utils.js"></script>
