@@ -69,7 +69,7 @@ class Game {
         this.ended = false;
         this.blocksMarkedWithFlag = 0;
         this.win = false;
-        this.field.recreateField();
+        this.field.resetField();
     };
 
     end() {
@@ -77,4 +77,5 @@ class Game {
         this.ended = true;
         if (!game.win) this.field.revealAllField();
     };
+
 }

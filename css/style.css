@@ -44,15 +44,13 @@ body {
     display: flex;
 }
 
+/*Modal*/
 .modal {
-    display: flex;
     position: fixed;
     left: 0;
     top: 0;
-    width: 100vh;
+    width: 100vw;
     height: 100vh;
-    width: 100%;
-    height: 100%;
     justify-content: right;
     align-items: flex-start;
     background-color: rgba(0, 0, 0, 0.822);
@@ -60,7 +58,7 @@ body {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .button {
@@ -91,7 +89,9 @@ body {
 }
 
 #configMenu{
-    position: relative;
+    display: inline-block;
+    position: absolute;
+    right: 0;
     padding: 10px;
     margin: 20px;
     min-width: 250px;
@@ -120,7 +120,6 @@ body {
 }
 
 .section .row .value {
-
     padding: 0 15px;
     background-color: white;
 }
@@ -131,12 +130,4 @@ body {
     left: 0;
     top: -20px;
     background-color: #bdbdbd;
-}
-
-.section .pressetRow {}
-
-.section .fieldRow {}
-
-.section .zoomRow {
-    padding: 0 30px; 
 }

@@ -116,7 +116,7 @@ class Field {
                 this.blocks[i][j].reveal();
     };
 
-    recreateField() {
+    resetField() {
         for(const i in this.blocks) 
             for(const j in this.blocks[0])
                 this.blocks[i][j].resetBlock();
