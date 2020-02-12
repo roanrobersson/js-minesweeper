@@ -5,6 +5,7 @@ const configs = {
     rows: 9,
     mines: 10,
     zoom: 2,
+    secureStart: false,
 };
 let game = new Game(configs);       
 game.initialize();

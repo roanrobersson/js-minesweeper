@@ -39,12 +39,15 @@ class Field {
                 this.blocks[i][j] = block;
             }
         }
-        this._putMines();
-        this._setNearbyMinesCount();
+
+        if (!game.secureStart) {
+            this._putMines(this.blocks.toArray1D());
+            this._setNearbyMinesCount(this.blocks.toArray1D());
+        }
     };
 
-    _putMines() {
-        let blocksTemp = this.blocks.toArray1D();
+    _putMines(blocks) {
+        let blocksTemp = blocks;
         let minesRemaining = this.mines;
         
         while( minesRemaining > 0) {
@@ -55,10 +58,15 @@ class Field {
         }
     };
 
-    _setNearbyMinesCount() {
-        for(const i in this.blocks) 
-            for(const j in this.blocks[0]) 
-                this.blocks[i][j].nearbyMinesCount = this._getNearbyMinesCount(this.blocks[i][j]);
+    _getBlocksWithouSecureBlock(blocks, secureBlock) {
+        let blocksWithoutSecureBlock = blocks.toArray1D();
+        const index = blocksWithoutSecureBlock.indexOf(secureBlock);
+        blocksWithoutSecureBlock.splice(index, 1);
+        return blocksWithoutSecureBlock;
+    };
+
+    _setNearbyMinesCount(blocks) {
+        for(const i in blocks) blocks[i].nearbyMinesCount = this._getNearbyMinesCount(blocks[i]);
     };
 
     _getNearbyBlocks(block) {
@@ -120,8 +128,10 @@ class Field {
         for(const i in this.blocks) 
             for(const j in this.blocks[0])
                 this.blocks[i][j].resetBlock();
-        this._putMines();
-        this._setNearbyMinesCount();
+        if (!game.secureStart) {
+            this._putMines(this.blocks.toArray1D());
+            this._setNearbyMinesCount(this.blocks.toArray1D());
+        }      
     };
 
     allSecureBlocksOppenned() {
@@ -131,5 +141,16 @@ class Field {
             if (blocksTemp[i].openned)
                 count++;
         return count == blocksTemp.length - game.mines;
-    }
+    };
+
+    onBlockOpen(block) {
+        if (game.secureStartPendent) {
+
+            const blocksWithoutSecureBlock = this._getBlocksWithouSecureBlock(this.blocks, block);
+            this._putMines(blocksWithoutSecureBlock);
+            this._setNearbyMinesCount(this.blocks.toArray1D());
+
+            game.secureStartPendent = false;
+        }
+    };
 }

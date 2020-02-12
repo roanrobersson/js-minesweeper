@@ -68,6 +68,7 @@ class Block {
     };
 
     open() {
+        this.field.onBlockOpen(this);
         this.openned = true; // Keep this on top of method
         this.selected = false;
         this.mark = null;

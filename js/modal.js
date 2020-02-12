@@ -7,6 +7,8 @@ const rowsValue = document.getElementById("rowsValue");
 const columnsValue = document.getElementById("columnsValue");
 const minesValue = document.getElementById("minesValue");
 const zoomValue = document.getElementById("zoomValue");
+const secureSwitchButton = document.getElementById("secureSwitchButton");
+const secureValue = document.getElementById("secureValue");
 
 const rowsPlus = document.getElementById("rowsPlus");
 const columnsPlus = document.getElementById("columnsPlus");
@@ -22,11 +24,14 @@ const mediumPreset = document.getElementById("mediumPreset");
 const hardPreset = document.getElementById("hardPreset");
 
 let menuData = {
-    rows: game.rows,
-    columns: game.columns,
-    mines: game.mines,
-    zoom: game.zoom,
+    rows : game.rows,
+    columns : game.columns,
+    mines : game.mines,
+    zoom : game.zoom,
+    secureStart : game.secureStart,
 }
+
+modal.style.userSelect = "none";
 
 menuCaller.onclick = menuOpen;
 
@@ -45,13 +50,15 @@ function update() {
     columnsValue.innerHTML = menuData.columns;
     minesValue.innerHTML = menuData.mines;
     zoomValue.innerHTML = menuData.zoom + "x";
-    
+    secureValue.innerHTML = (menuData.secureStart) ? "TRUE" : "FALSE";
+
     const configs = {
         htmlElement: document.getElementById("game"),
-        columns: menuData.columns,
-        rows: menuData.rows,
-        mines: menuData.mines,
-        zoom: menuData.zoom,
+        columns : menuData.columns,
+        rows : menuData.rows,
+        mines : menuData.mines,
+        zoom : menuData.zoom,
+        secureStart : menuData.secureStart,
     };
     
     game.htmlElement.innerHTML = "";
@@ -60,7 +67,7 @@ function update() {
 
     setTimeout(() => {
         loading.classList.add("hidden");
-    }, 500);
+    }, 300);
 }
 
 rowsPlus.onclick = () => { 
@@ -102,7 +109,7 @@ rowsMinus.onclick = () => {
 
 columnsMinus.onclick = () => { 
     const futureMaxMines = (menuData.rows * menuData.columns) -2 ;
-    if(menuData.columns > 2 && menuData.mines <  futureMaxMines) {
+    if(menuData.columns > 8 && menuData.mines <  futureMaxMines) {
         menuData.columns--;
         update();
     }
@@ -142,3 +149,14 @@ hardPreset.onclick = () => {
     menuData.mines = 300;
     update();
 };
+
+
+secureSwitchButton.onclick = () => {
+    if (menuData.secureStart) {
+        menuData.secureStart = false;
+        update();
+    } else {
+        menuData.secureStart = true;
+        update();
+    }
+}

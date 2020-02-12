@@ -5,6 +5,8 @@ class Game {
         this.rows = configs.rows;
         this.zoom = configs.zoom;
         this.mines = configs.mines;
+        this.secureStart = configs.secureStart;
+        this.secureStartPendent = configs.secureStart;
         this.input = new Input(this.htmlElement);
         this.blocksMarkedWithFlag = 0;
         this.scoreboard = null;
@@ -69,6 +71,7 @@ class Game {
         this.ended = false;
         this.blocksMarkedWithFlag = 0;
         this.win = false;
+        this.secureStartPendent = this.secureStart;
         this.field.resetField();
     };
 
