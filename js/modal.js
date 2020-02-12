@@ -39,6 +39,8 @@ closeButton.onclick = () => { modal.classList.add("hidden") };
 function menuOpen() { modal.classList.remove("hidden") };
 
 function update() {
+    loading.classList.remove("hidden");
+    
     rowsValue.innerHTML = menuData.rows;
     columnsValue.innerHTML = menuData.columns;
     minesValue.innerHTML = menuData.mines;
@@ -55,6 +57,10 @@ function update() {
     game.htmlElement.innerHTML = "";
     game = new Game(configs);
     game.initialize();
+
+    setTimeout(() => {
+        loading.classList.add("hidden");
+    }, 500);
 }
 
 rowsPlus.onclick = () => { 
