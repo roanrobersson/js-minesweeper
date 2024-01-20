@@ -1,4 +1,4 @@
-# JS Minesweeper:bomb:
+# JS Minesweeper :bomb:
 Windows XP minesweeper clone, build with Javascript.
 
 ### Live demo: http://roanrobersson.github.io/js-minesweeper/index.html
